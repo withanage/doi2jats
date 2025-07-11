@@ -1,6 +1,6 @@
 # Citation Generator
 
-A PSR-4 compatible PHP library for generating JATS XML citations from DOIs using multiple academic data providers.
+simple PHP  CLI tool for generating JATS XML citations from DOIs using multiple academic data providers.
 
 ## Installation
 
@@ -22,18 +22,14 @@ php doi2jats.php <DOI>
 ```
 
 Example:
+
 ```bash
 php doi2jats.php 10.52825/bis.v1i.42
 ```
 
-## PSR-4 Compliance
 
 
-
-## Development
-
-- Lead  and concpet : Dulip Withanage (TIB)
-### Testing
+## Testing
 
 ```bash
 composer test
@@ -50,3 +46,8 @@ composer test
 - PHP 8.0 or higher
 - ext-dom (for XML generation)
 - ext-json (for API responses)
+
+
+# Development
+
+- Lead  and concept : Dulip Withanage (TIB)
