@@ -261,9 +261,9 @@ final class Application
         echo "  combined      All citations in a <ref-list> wrapper\n";
         echo "  bibliography  Full bibliography format with labels\n\n";
         echo "Examples:\n";
-        echo "  php doi2jats.php 10.1038/nature12373\n";
-        echo "  php doi2jats.php 10.1038/nature12373 10.52825/bis.v1i.42\n";
-        echo "  php doi2jats.php -v -f combined 10.1038/nature12373 10.52825/bis.v1i.42\n";
-        echo "  php doi2jats.php --format bibliography 10.1038/nature12373 10.52825/bis.v1i.42\n\n";
+        echo "  php doi2jats.php 10.30430/gjae.2023.0350\n";
+        echo "  php doi2jats.php 10.30430/gjae.2023.0350 10.52825/bis.v1i.42\n";
+        echo "  php doi2jats.php -v -f combined 10.30430/gjae.2023.0350 10.52825/bis.v1i.42\n";
+        echo "  php doi2jats.php --format bibliography 10.30430/gjae.2023.0350 10.52825/bis.v1i.42\n\n";
     }
 }

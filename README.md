@@ -27,7 +27,7 @@ php doi2jats.php <DOI>
 
 Example:
 ```bash
-php doi2jats.php 10.1038/nature12373
+php doi2jats.php 10.30430/gjae.2023.0350
 ```
 
 ### Multiple DOIs
@@ -38,23 +38,23 @@ php doi2jats.php <DOI1> <DOI2> <DOI3> ...
 
 Example:
 ```bash
-php doi2jats.php 10.1038/nature12373 10.52825/bis.v1i.42
+php doi2jats.php 10.30430/gjae.2023.0350 10.52825/bis.v1i.42
 ```
 
 ### Advanced Options
 
 ```bash
 # Verbose output with processing details
-php doi2jats.php -v 10.1038/nature12373 10.52825/bis.v1i.42
+php doi2jats.php -v 10.30430/gjae.2023.0350 10.52825/bis.v1i.42
 
 # Combined format (all citations in ref-list)
-php doi2jats.php -f combined 10.1038/nature12373 10.52825/bis.v1i.42
+php doi2jats.php -f combined 10.30430/gjae.2023.0350 10.52825/bis.v1i.42
 
 # Bibliography format with numbering
-php doi2jats.php --format bibliography 10.1038/nature12373 10.52825/bis.v1i.42
+php doi2jats.php --format bibliography 10.30430/gjae.2023.0350 10.52825/bis.v1i.42
 
 # Verbose + combined format
-php doi2jats.php -v -f combined 10.1038/nature12373 10.52825/bis.v1i.42
+php doi2jats.php -v -f combined 10.30430/gjae.2023.0350 10.52825/bis.v1i.42
 ```
 
 ### Command-Line Options
@@ -70,7 +70,7 @@ php doi2jats.php -v -f combined 10.1038/nature12373 10.52825/bis.v1i.42
 #### Individual (Default)
 Each citation as separate XML documents:
 ```xml
-<!-- DOI: 10.1038/nature12373 -->
+<!-- DOI: 10.30430/gjae.2023.0350 -->
 <?xml version="1.0" encoding="UTF-8"?>
 <element-citation publication-type="journal">
   ...
@@ -136,14 +136,14 @@ The application handles various error scenarios:
 ### Example with Errors
 
 ```bash
-$ php doi2jats.php -v 10.1038/nature12373 invalid-doi 10.52825/bis.v1i.42
+$ php doi2jats.php -v 10.30430/gjae.2023.0350 invalid-doi 10.52825/bis.v1i.42
 Processing 3 DOI(s) in 'individual' format...
-Processing DOI 1/3: 10.1038/nature12373
+Processing DOI 1/3: 10.30430/gjae.2023.0350
 Processing DOI 2/3: invalid-doi
   Error: Invalid DOI format: invalid-doi
 Processing DOI 3/3: 10.52825/bis.v1i.42
 
-<!-- DOI: 10.1038/nature12373 -->
+<!-- DOI: 10.30430/gjae.2023.0350 -->
 <?xml version="1.0" encoding="UTF-8"?>
 <element-citation publication-type="journal">
   ...
