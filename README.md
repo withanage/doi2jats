@@ -1,4 +1,4 @@
-# Citation Generator
+# JATS Element Citation Generator (doi2jats) 
 
 simple PHP  CLI tool for generating JATS XML citations from DOIs using multiple academic data providers.
 
