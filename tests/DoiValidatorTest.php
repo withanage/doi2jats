@@ -12,7 +12,7 @@ final class DoiValidatorTest extends TestCase
 {
     public function testValidDoi(): void
     {
-        $doi = '10.52825/bis.v1i.42';
+        $doi = '10.1038/nature12373';
         $result = DoiValidator::validate($doi);
         
         $this->assertEquals($doi, $result);
@@ -26,7 +26,7 @@ final class DoiValidatorTest extends TestCase
 
     public function testDoiWithUrlPrefix(): void
     {
-        $result = DoiValidator::validate('https://doi.org/10.52825/bis.v1i.42');
-        $this->assertEquals('10.52825/bis.v1i.42', $result);
+        $result = DoiValidator::validate('https://doi.org/10.1038/nature12373');
+        $this->assertEquals('10.1038/nature12373', $result);
     }
 }

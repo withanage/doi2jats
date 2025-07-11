@@ -7,6 +7,8 @@ namespace CitationGenerator;
 final class Application
 {
     private CitationService $citationService;
+    private bool $verbose = false;
+    private string $outputFormat = 'individual'; // individual, combined, bibliography
 
     public function __construct()
     {
@@ -31,20 +33,237 @@ final class Application
             exit(1);
         }
 
-        $doi = $args[1];
+        // Parse options and DOIs
+        $options = $this->parseArguments($args);
+        $dois = $options['dois'];
+
+        if (empty($dois)) {
+            $this->showUsage();
+            exit(1);
+        }
+
+        $this->verbose = $options['verbose'];
+        $this->outputFormat = $options['format'];
+
+        if ($this->verbose) {
+            fwrite(STDERR, "Processing " . count($dois) . " DOI(s) in '{$this->outputFormat}' format...\n");
+        }
 
         try {
-            $citation = $this->citationService->generateCitation($doi);
-            echo $citation;
+            $this->processDois($dois);
         } catch (InvalidDoiException | CitationException $e) {
             fwrite(STDERR, "Error: {$e->getMessage()}\n");
             exit(1);
         }
     }
 
+    private function parseArguments(array $args): array
+    {
+        $dois = [];
+        $verbose = false;
+        $format = 'individual';
+
+        for ($i = 1; $i < count($args); $i++) {
+            $arg = $args[$i];
+            
+            switch ($arg) {
+                case '-v':
+                case '--verbose':
+                    $verbose = true;
+                    break;
+                case '-f':
+                case '--format':
+                    if (isset($args[$i + 1])) {
+                        $format = $args[++$i];
+                        if (!in_array($format, ['individual', 'combined', 'bibliography'], true)) {
+                            fwrite(STDERR, "Invalid format: {$format}. Use: individual, combined, or bibliography\n");
+                            exit(1);
+                        }
+                    }
+                    break;
+                case '-h':
+                case '--help':
+                    $this->showUsage();
+                    exit(0);
+                default:
+                    // Assume it's a DOI
+                    $dois[] = $arg;
+                    break;
+            }
+        }
+
+        return [
+            'dois' => $dois,
+            'verbose' => $verbose,
+            'format' => $format
+        ];
+    }
+
+    private function processDois(array $dois): void
+    {
+        $citations = [];
+        $errors = [];
+
+        foreach ($dois as $index => $doi) {
+            if ($this->verbose) {
+                fwrite(STDERR, "Processing DOI " . ($index + 1) . "/" . count($dois) . ": {$doi}\n");
+            }
+
+            try {
+                $citation = $this->citationService->generateCitation($doi);
+                $citations[] = [
+                    'doi' => $doi,
+                    'citation' => $citation,
+                    'success' => true
+                ];
+            } catch (InvalidDoiException | CitationException $e) {
+                $errors[] = [
+                    'doi' => $doi,
+                    'error' => $e->getMessage(),
+                    'success' => false
+                ];
+                
+                if ($this->verbose) {
+                    fwrite(STDERR, "  Error: {$e->getMessage()}\n");
+                }
+            }
+        }
+
+        $this->outputResults($citations, $errors);
+    }
+
+    private function outputResults(array $citations, array $errors): void
+    {
+        switch ($this->outputFormat) {
+            case 'individual':
+                $this->outputIndividual($citations, $errors);
+                break;
+            case 'combined':
+                $this->outputCombined($citations, $errors);
+                break;
+            case 'bibliography':
+                $this->outputBibliography($citations, $errors);
+                break;
+        }
+
+        // Output summary if verbose or if there were errors
+        if ($this->verbose || !empty($errors)) {
+            $this->outputSummary($citations, $errors);
+        }
+    }
+
+    private function outputIndividual(array $citations, array $errors): void
+    {
+        foreach ($citations as $result) {
+            echo "<!-- DOI: {$result['doi']} -->\n";
+            echo $result['citation'] . "\n";
+        }
+
+        foreach ($errors as $error) {
+            echo "<!-- ERROR for DOI: {$error['doi']} - {$error['error']} -->\n";
+        }
+    }
+
+    private function outputCombined(array $citations, array $errors): void
+    {
+        echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+        echo "<ref-list>\n";
+        
+        foreach ($citations as $index => $result) {
+            echo "  <!-- DOI: {$result['doi']} -->\n";
+            echo "  <ref id=\"ref" . ($index + 1) . "\">\n";
+            
+            // Extract the element-citation from the full XML
+            $xml = simplexml_load_string($result['citation']);
+            if ($xml) {
+                $citationXml = $xml->asXML();
+                // Remove the XML declaration and format nicely
+                $citationXml = preg_replace('/<\?xml[^>]*\?>/', '', $citationXml);
+                $citationXml = trim($citationXml);
+                // Indent the citation
+                $citationXml = "    " . str_replace("\n", "\n    ", $citationXml);
+                echo $citationXml . "\n";
+            }
+            
+            echo "  </ref>\n";
+        }
+
+        foreach ($errors as $error) {
+            echo "  <!-- ERROR: {$error['doi']} - {$error['error']} -->\n";
+        }
+        
+        echo "</ref-list>\n";
+    }
+
+    private function outputBibliography(array $citations, array $errors): void
+    {
+        echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
+        echo "<back>\n";
+        echo "  <ref-list>\n";
+        echo "    <title>References</title>\n";
+        
+        foreach ($citations as $index => $result) {
+            echo "    <!-- DOI: {$result['doi']} -->\n";
+            echo "    <ref id=\"bib" . ($index + 1) . "\">\n";
+            echo "      <label>" . ($index + 1) . ".</label>\n";
+            
+            // Extract and format the citation
+            $xml = simplexml_load_string($result['citation']);
+            if ($xml) {
+                $citationXml = $xml->asXML();
+                $citationXml = preg_replace('/<\?xml[^>]*\?>/', '', $citationXml);
+                $citationXml = trim($citationXml);
+                $citationXml = "      " . str_replace("\n", "\n      ", $citationXml);
+                echo $citationXml . "\n";
+            }
+            
+            echo "    </ref>\n";
+        }
+
+        foreach ($errors as $error) {
+            echo "    <!-- ERROR: {$error['doi']} - {$error['error']} -->\n";
+        }
+        
+        echo "  </ref-list>\n";
+        echo "</back>\n";
+    }
+
+    private function outputSummary(array $citations, array $errors): void
+    {
+        $total = count($citations) + count($errors);
+        $successful = count($citations);
+        $failed = count($errors);
+
+        fwrite(STDERR, "\n=== SUMMARY ===\n");
+        fwrite(STDERR, "Total DOIs processed: {$total}\n");
+        fwrite(STDERR, "Successful: {$successful}\n");
+        fwrite(STDERR, "Failed: {$failed}\n");
+
+        if (!empty($errors)) {
+            fwrite(STDERR, "\nFailed DOIs:\n");
+            foreach ($errors as $error) {
+                fwrite(STDERR, "  - {$error['doi']}: {$error['error']}\n");
+            }
+        }
+    }
+
     private function showUsage(): void
     {
-        echo "Usage: php doi2jats.php <DOI>\n";
-        echo "Example: php doi2jats.php 10.52825/bis.v1i.42\n";
+        echo "Citation Generator - Generate JATS XML citations from DOIs\n\n";
+        echo "Usage:\n";
+        echo "  php doi2jats.php [OPTIONS] <DOI1> [DOI2] [DOI3] ...\n\n";
+        echo "Options:\n";
+        echo "  -v, --verbose          Show detailed processing information\n";
+        echo "  -f, --format FORMAT    Output format: individual, combined, bibliography\n";
+        echo "  -h, --help             Show this help message\n\n";
+        echo "Output Formats:\n";
+        echo "  individual    Each citation as separate XML (default)\n";
+        echo "  combined      All citations in a <ref-list> wrapper\n";
+        echo "  bibliography  Full bibliography format with labels\n\n";
+        echo "Examples:\n";
+        echo "  php doi2jats.php 10.1038/nature12373\n";
+        echo "  php doi2jats.php 10.1038/nature12373 10.52825/bis.v1i.42\n";
+        echo "  php doi2jats.php -v -f combined 10.1038/nature12373 10.52825/bis.v1i.42\n";
+        echo "  php doi2jats.php --format bibliography 10.1038/nature12373 10.52825/bis.v1i.42\n\n";
     }
 }
