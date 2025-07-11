@@ -126,13 +126,6 @@ Full bibliography format with labels:
 
 ## Error Handling
 
-The application handles various error scenarios:
-
-- **Invalid DOI format**: Shows specific error for malformed DOIs
-- **Network failures**: Gracefully handles API timeouts and connection issues
-- **Missing citations**: Tries multiple providers before failing
-- **Partial failures**: With multiple DOIs, successful citations are still output
-
 ### Example with Errors
 
 ```bash
@@ -190,4 +183,11 @@ composer test
 
 # Development
 
+
 - Lead  and concept : Dulip Withanage (TIB)
+
+
+# Known isses
+
+- Method  documentation is   used limitedly.
+- 
