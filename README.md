@@ -7,7 +7,8 @@ simple PHP  CLI tool for generating JATS XML citations from DOIs using multiple 
 ### Using Composer (Recommended)
 
 ```bash
-cd citation_generator
+git clone https://github.com/withanage/doi2jats/
+cd doi2jats
 composer install
 ```
 
