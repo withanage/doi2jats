@@ -86,7 +86,7 @@ jobs:
     - name: Run Unit Tests
       run: |
         if [ -f "vendor/bin/phpunit" ]; then
-          vendor/bin/phpunit --coverage-clover=coverage.xml --log-junit=test-results.xml
+          vendor/bin/phpunit  --configuration phpunit.xml
         else
           composer test
         fi
