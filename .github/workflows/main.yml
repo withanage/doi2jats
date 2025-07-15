@@ -318,7 +318,7 @@ jobs:
           if [ -f "$xml_file" ]; then
             echo "Validating $xml_file..."
             xmllint --noout "$xml_file" || {
-              echo "❌ XML validation failed for $xml_file"
+              echo "XML validation failed for $xml_file"
               cat "$xml_file"
               exit 1
             }
@@ -340,7 +340,7 @@ jobs:
         fi
 
     - name: Upload integration test artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: integration-test-outputs
