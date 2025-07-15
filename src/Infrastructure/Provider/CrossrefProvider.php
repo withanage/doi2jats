@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-namespace CitationGenerator;
+namespace CitationGenerator\Infrastructure\Provider;
+
+use CitationGenerator\Core\Exception\ProviderException;
 
 final class CrossrefProvider extends AbstractCitationProvider
 {

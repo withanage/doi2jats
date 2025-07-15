@@ -2,7 +2,9 @@
 
 declare(strict_types=1);
 
-namespace CitationGenerator;
+namespace CitationGenerator\Domain\Doi;
+
+use CitationGenerator\Core\Exception\InvalidDoiException;
 
 final class DoiValidator
 {

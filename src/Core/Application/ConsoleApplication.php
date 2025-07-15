@@ -2,9 +2,16 @@
 
 declare(strict_types=1);
 
-namespace CitationGenerator;
+namespace CitationGenerator\Core\Application;
 
-final class Application
+use CitationGenerator\Service\CitationService;
+use CitationGenerator\Infrastructure\Provider\CrossrefProvider;
+use CitationGenerator\Infrastructure\Provider\OpenAlexProvider;
+use CitationGenerator\Infrastructure\Xml\JatsXmlBuilder;
+use CitationGenerator\Core\Exception\InvalidDoiException;
+use CitationGenerator\Core\Exception\CitationException;
+
+final class ConsoleApplication
 {
     private CitationService $citationService;
     private bool $verbose = false;
@@ -193,14 +200,11 @@ final class Application
             echo "  <!-- DOI: {$result['doi']} -->\n";
             echo "  <ref id=\"ref" . ($index + 1) . "\">\n";
 
-            // Extract the element-citation from the full XML
-
             $citationXml = $result['citation'];
             $citationXml = preg_replace('/<\?xml[^>]*\?>/', '', $citationXml);
             $citationXml = trim($citationXml);
             $citationXml = "    " . str_replace("\n", "\n    ", $citationXml);
             echo $citationXml . "\n";
-
 
             echo "  </ref>\n";
         }

@@ -1,5 +1,22 @@
-.idea/*
-vendor/*
+# Dependencies
+/vendor/
 
-.phpunit.result.cache
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Coverage reports
+/coverage/
+clover.xml
+
+# Composer
 composer.lock

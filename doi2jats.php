@@ -9,7 +9,7 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
     // Simple PSR-4 autoloader fallback
     spl_autoload_register(function (string $class): void {
         $prefix = 'CitationGenerator\\';
-        $baseDir = __DIR__ . '/src/CitationGenerator/';
+        $baseDir = __DIR__ . '/src/';
 
         $len = strlen($prefix);
         if (strncmp($prefix, $class, $len) !== 0) {
@@ -25,7 +25,7 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
     });
 }
 
-use CitationGenerator\Application;
+use CitationGenerator\Core\Application\ConsoleApplication;
 
-$app = new Application();
+$app = new ConsoleApplication();
 $app->run($argv);

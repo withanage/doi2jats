@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace CitationGenerator;
+namespace CitationGenerator\Domain\Citation;
 
 final class CitationData implements CitationDataInterface
 {

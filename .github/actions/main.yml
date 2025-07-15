@@ -1,0 +1,457 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop, feature/* ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # Run tests daily at 2 AM UTC to catch external API changes
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+    inputs:
+      run_integration_tests:
+        description: 'Run integration tests with live APIs'
+        required: false
+        default: 'true'
+        type: boolean
+
+env:
+  COMPOSER_CACHE_DIR: ~/.composer/cache
+
+jobs:
+  validate:
+    name: Code Validation
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: dom, curl, libxml, mbstring, zip, json
+        tools: composer:v2
+
+    - name: Validate composer.json and composer.lock
+      run: composer validate --strict
+
+    - name: Check file permissions
+      run: |
+        find . -name "*.php" -exec ls -la {} \;
+        chmod +x doi2jats.php
+
+  test:
+    name: Tests
+    runs-on: ubuntu-latest
+    needs: validate
+    
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['8.1', '8.2', '8.3']
+        dependency-version: [prefer-lowest, prefer-stable]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php }}
+        extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, json
+        coverage: xdebug
+        tools: composer:v2
+
+    - name: Get composer cache directory
+      id: composer-cache
+      run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+    - name: Cache Composer packages
+      uses: actions/cache@v3
+      with:
+        path: ${{ steps.composer-cache.outputs.dir }}
+        key: ubuntu-composer-${{ matrix.php }}-${{ matrix.dependency-version }}-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ubuntu-composer-${{ matrix.php }}-${{ matrix.dependency-version }}-
+          ubuntu-composer-${{ matrix.php }}-
+          ubuntu-composer-
+
+    - name: Install dependencies
+      run: composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction --no-progress
+
+    - name: Run Unit Tests
+      run: |
+        if [ -f "vendor/bin/phpunit" ]; then
+          vendor/bin/phpunit --coverage-clover=coverage.xml --log-junit=test-results.xml
+        else
+          composer test
+        fi
+
+    - name: Upload test results
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: test-results-ubuntu-php${{ matrix.php }}-${{ matrix.dependency-version }}
+        path: |
+          test-results.xml
+          coverage.xml
+
+  code-quality:
+    name: Code Quality
+    runs-on: ubuntu-latest
+    needs: validate
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: dom, curl, libxml, mbstring, zip, json
+        tools: composer:v2, cs2pr
+
+    - name: Cache Composer packages
+      uses: actions/cache@v3
+      with:
+        path: ~/.composer/cache
+        key: ubuntu-composer-code-quality-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ubuntu-composer-code-quality-
+          ubuntu-composer-
+
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-interaction --no-progress
+
+    - name: Install PHP CS Fixer
+      run: composer require --dev friendsofphp/php-cs-fixer --no-interaction
+
+    - name: Create PHP CS Fixer config
+      run: |
+        cat > .php-cs-fixer.php << 'EOF'
+        <?php
+        return (new PhpCsFixer\Config())
+            ->setRules([
+                '@PSR12' => true,
+                'array_syntax' => ['syntax' => 'short'],
+                'ordered_imports' => ['sort_algorithm' => 'alpha'],
+                'no_unused_imports' => true,
+                'not_operator_with_successor_space' => true,
+                'trailing_comma_in_multiline' => true,
+                'phpdoc_scalar' => true,
+                'unary_operator_spaces' => true,
+                'binary_operator_spaces' => true,
+                'blank_line_before_statement' => [
+                    'statements' => ['break', 'continue', 'declare', 'return', 'throw', 'try'],
+                ],
+                'phpdoc_single_line_var_spacing' => true,
+                'phpdoc_var_without_name' => true,
+                'method_argument_space' => [
+                    'on_multiline' => 'ensure_fully_multiline',
+                    'keep_multiple_spaces_after_comma' => true,
+                ],
+            ])
+            ->setFinder(
+                PhpCsFixer\Finder::create()
+                    ->in(__DIR__ . '/src')
+                    ->in(__DIR__)
+                    ->name('doi2jats.php')
+                    ->exclude('vendor')
+            );
+        EOF
+
+    - name: Run PHP CS Fixer (dry run)
+      run: vendor/bin/php-cs-fixer fix --dry-run --diff --format=checkstyle | cs2pr
+
+    - name: Run PHPStan
+      run: |
+        if [ -f "vendor/bin/phpstan" ]; then
+          vendor/bin/phpstan analyse --error-format=checkstyle | cs2pr
+        else
+          composer analyse
+        fi
+
+  integration-tests:
+    name: Integration Tests
+    runs-on: ubuntu-latest
+    needs: [validate, test]
+    if: github.event.inputs.run_integration_tests != 'false'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: dom, curl, libxml, mbstring, zip, json
+        tools: composer:v2
+
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-interaction --no-progress
+
+    - name: Make script executable
+      run: chmod +x doi2jats.php
+
+    - name: Test help command
+      run: |
+        php doi2jats.php --help > help_output.txt
+        if ! grep -q "Citation Generator" help_output.txt; then
+          echo "❌ Help command test failed"
+          cat help_output.txt
+          exit 1
+        fi
+        echo "✅ Help command test passed"
+
+    - name: Test invalid DOI handling
+      run: |
+        set +e  # Allow command to fail
+        php doi2jats.php "invalid-doi-format" 2>error_output.txt
+        exit_code=$?
+        set -e
+        
+        if [ $exit_code -eq 0 ]; then
+          echo "❌ Error handling test failed: Should have failed with invalid DOI"
+          exit 1
+        fi
+        
+        if ! grep -q "Invalid DOI format" error_output.txt; then
+          echo "❌ Error message test failed"
+          cat error_output.txt
+          exit 1
+        fi
+        echo "✅ Error handling test passed"
+
+    - name: Test single DOI processing
+      run: |
+        timeout 30s php doi2jats.php "10.30430/gjae.2023.0350" > single_test.xml || {
+          echo "❌ Single DOI test timed out or failed"
+          exit 1
+        }
+        
+        if [ ! -s single_test.xml ]; then
+          echo "❌ Single DOI test failed: No output generated"
+          exit 1
+        fi
+        
+        if ! grep -q "element-citation" single_test.xml; then
+          echo "❌ Single DOI test failed: Invalid XML structure"
+          cat single_test.xml
+          exit 1
+        fi
+        echo "✅ Single DOI test passed"
+
+    - name: Test multiple DOIs processing
+      run: |
+        timeout 60s php doi2jats.php -v "10.30430/gjae.2023.0350" "10.52825/bis.v1i.42" > multi_test.xml 2>multi_stderr.txt || {
+          echo "❌ Multi-DOI test timed out or failed"
+          cat multi_stderr.txt
+          exit 1
+        }
+        
+        if [ ! -s multi_test.xml ]; then
+          echo "❌ Multi-DOI test failed: No output generated"
+          cat multi_stderr.txt
+          exit 1
+        fi
+        
+        citation_count=$(grep -c "element-citation" multi_test.xml || echo "0")
+        if [ "$citation_count" -lt 1 ]; then
+          echo "❌ Multi-DOI test failed: Expected at least 1 citation, got $citation_count"
+          cat multi_test.xml
+          exit 1
+        fi
+        echo "✅ Multi-DOI test passed: Generated $citation_count citations"
+
+    - name: Test combined format
+      run: |
+        timeout 45s php doi2jats.php -f combined "10.30430/gjae.2023.0350" "10.52825/bis.v1i.42" > combined_test.xml || {
+          echo "❌ Combined format test timed out or failed"
+          exit 1
+        }
+        
+        if ! grep -q "<ref-list>" combined_test.xml; then
+          echo "❌ Combined format test failed: Missing ref-list element"
+          cat combined_test.xml
+          exit 1
+        fi
+        
+        if ! grep -q '<?xml version="1.0" encoding="UTF-8"?>' combined_test.xml; then
+          echo "❌ Combined format test failed: Missing XML declaration"
+          exit 1
+        fi
+        echo "✅ Combined format test passed"
+
+    - name: Test bibliography format
+      run: |
+        timeout 45s php doi2jats.php -f bibliography "10.30430/gjae.2023.0350" > bib_test.xml || {
+          echo "❌ Bibliography format test timed out or failed"
+          exit 1
+        }
+        
+        if ! grep -q "<back>" bib_test.xml; then
+          echo "❌ Bibliography format test failed: Missing back element"
+          cat bib_test.xml
+          exit 1
+        fi
+        
+        if ! grep -q "<label>" bib_test.xml; then
+          echo "❌ Bibliography format test failed: Missing label element"
+          cat bib_test.xml
+          exit 1
+        fi
+        echo "✅ Bibliography format test passed"
+
+    - name: Install XML validation tools
+      run: sudo apt-get update && sudo apt-get install -y libxml2-utils
+
+    - name: Validate XML output
+      run: |
+        # Test each generated XML file
+        for xml_file in *.xml; do
+          if [ -f "$xml_file" ]; then
+            echo "Validating $xml_file..."
+            xmllint --noout "$xml_file" || {
+              echo "❌ XML validation failed for $xml_file"
+              cat "$xml_file"
+              exit 1
+            }
+          fi
+        done
+        echo "✅ All XML files are well-formed"
+
+    - name: Test performance with timeout
+      run: |
+        echo "🚀 Testing performance..."
+        start_time=$(date +%s)
+        timeout 120s php doi2jats.php "10.30430/gjae.2023.0350" > perf_test.xml
+        end_time=$(date +%s)
+        duration=$((end_time - start_time))
+        
+        echo "⏱️ Single DOI processing took ${duration} seconds"
+        if [ $duration -gt 30 ]; then
+          echo "⚠️ Warning: Processing took longer than expected (${duration}s > 30s)"
+        fi
+
+    - name: Upload integration test artifacts
+      uses: actions/upload-artifact@v3
+      if: always()
+      with:
+        name: integration-test-outputs
+        path: |
+          *.xml
+          *.txt
+          multi_stderr.txt
+
+  security:
+    name: Security Analysis
+    runs-on: ubuntu-latest
+    needs: validate
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: dom, curl, libxml, mbstring, zip, json
+        tools: composer:v2
+
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-interaction --no-progress
+
+    - name: Run Composer audit
+      run: composer audit --format=plain
+
+    - name: Check for known security vulnerabilities
+      run: |
+        composer require --dev roave/security-advisories:dev-latest --no-interaction || {
+          echo "⚠️ Security advisories check completed with warnings"
+        }
+
+    - name: Scan for hardcoded secrets
+      run: |
+        # Simple check for common secret patterns
+        if grep -r -i "password\|secret\|key\|token" src/ --include="*.php" | grep -v "interface\|function\|class\|comment"; then
+          echo "⚠️ Potential hardcoded secrets found"
+        else
+          echo "✅ No obvious hardcoded secrets detected"
+        fi
+
+  coverage:
+    name: Code Coverage
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.event_name == 'push' || github.event_name == 'pull_request'
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.2'
+        extensions: dom, curl, libxml, mbstring, zip, json, xdebug
+        coverage: xdebug
+        tools: composer:v2
+
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-interaction --no-progress
+
+    - name: Run tests with coverage
+      run: |
+        if [ -f "vendor/bin/phpunit" ]; then
+          vendor/bin/phpunit --coverage-clover=coverage.xml --coverage-html=coverage-html
+        else
+          composer test
+        fi
+
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage.xml
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: false
+
+    - name: Upload coverage artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage-report
+        path: |
+          coverage.xml
+          coverage-html/
+
+  build-status:
+    name: Build Status
+    runs-on: ubuntu-latest
+    needs: [test, code-quality, integration-tests, security, coverage]
+    if: always()
+    
+    steps:
+    - name: Check all jobs status
+      run: |
+        echo "Test job status: ${{ needs.test.result }}"
+        echo "Code quality job status: ${{ needs.code-quality.result }}"
+        echo "Integration tests job status: ${{ needs.integration-tests.result }}"
+        echo "Security job status: ${{ needs.security.result }}"
+        echo "Coverage job status: ${{ needs.coverage.result }}"
+        
+        if [ "${{ needs.test.result }}" != "success" ] || 
+           [ "${{ needs.code-quality.result }}" != "success" ] || 
+           [ "${{ needs.integration-tests.result }}" != "success" ] ||
+           [ "${{ needs.security.result }}" != "success" ]; then
+          echo "❌ One or more critical jobs failed"
+          exit 1
+        fi
+        
+        echo "✅ All critical jobs passed successfully"

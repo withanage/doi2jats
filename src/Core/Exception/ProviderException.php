@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace CitationGenerator;
+namespace CitationGenerator\Core\Exception;
 
 class ProviderException extends CitationException
 {

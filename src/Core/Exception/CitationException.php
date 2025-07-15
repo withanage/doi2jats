@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace CitationGenerator;
+namespace CitationGenerator\Core\Exception;
 
 use Exception;
 use Throwable;

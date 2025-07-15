@@ -2,7 +2,10 @@
 
 declare(strict_types=1);
 
-namespace CitationGenerator;
+namespace CitationGenerator\Infrastructure\Provider;
+
+use CitationGenerator\Domain\Provider\CitationProviderInterface;
+use CitationGenerator\Core\Exception\ProviderException;
 
 abstract class AbstractCitationProvider implements CitationProviderInterface
 {

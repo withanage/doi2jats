@@ -2,8 +2,11 @@
 
 declare(strict_types=1);
 
-namespace CitationGenerator;
+namespace CitationGenerator\Infrastructure\Xml;
 
+use CitationGenerator\Domain\Provider\XmlBuilderInterface;
+use CitationGenerator\Domain\Citation\CitationData;
+use CitationGenerator\Domain\Citation\CitationDataInterface;
 use DOMDocument;
 use DOMElement;
 

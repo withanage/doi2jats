@@ -2,7 +2,13 @@
 
 declare(strict_types=1);
 
-namespace CitationGenerator;
+namespace CitationGenerator\Service;
+
+use CitationGenerator\Domain\Provider\CitationProviderInterface;
+use CitationGenerator\Domain\Provider\XmlBuilderInterface;
+use CitationGenerator\Domain\Doi\DoiValidator;
+use CitationGenerator\Core\Exception\CitationException;
+use CitationGenerator\Core\Exception\ProviderException;
 
 final class CitationService
 {

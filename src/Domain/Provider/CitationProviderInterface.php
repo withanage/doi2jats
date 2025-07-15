@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace CitationGenerator;
+namespace CitationGenerator\Domain\Provider;
 
 interface CitationProviderInterface
 {
