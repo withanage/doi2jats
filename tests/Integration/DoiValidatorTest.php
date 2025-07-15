@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace CitationGenerator\Tests\Unit;
+namespace CitationGenerator\Tests\Integration;
 
 use CitationGenerator\Core\Exception\InvalidDoiException;
 use CitationGenerator\Domain\Doi\DoiValidator;
