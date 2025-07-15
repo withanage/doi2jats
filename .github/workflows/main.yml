@@ -26,7 +26,7 @@ jobs:
     
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
@@ -71,7 +71,7 @@ jobs:
       run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
     - name: Cache Composer packages
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ${{ steps.composer-cache.outputs.dir }}
         key: ubuntu-composer-${{ matrix.php }}-${{ matrix.dependency-version }}-${{ hashFiles('**/composer.lock') }}
@@ -92,7 +92,7 @@ jobs:
         fi
 
     - name: Upload test results
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       if: always()
       with:
         name: test-results-ubuntu-php${{ matrix.php }}-${{ matrix.dependency-version }}
@@ -117,7 +117,7 @@ jobs:
         tools: composer:v2, cs2pr
 
     - name: Cache Composer packages
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: ~/.composer/cache
         key: ubuntu-composer-code-quality-${{ hashFiles('**/composer.lock') }}
@@ -318,7 +318,7 @@ jobs:
           if [ -f "$xml_file" ]; then
             echo "Validating $xml_file..."
             xmllint --noout "$xml_file" || {
-              echo "XML validation failed for $xml_file"
+              echo "❌ XML validation failed for $xml_file"
               cat "$xml_file"
               exit 1
             }
@@ -424,7 +424,7 @@ jobs:
         fail_ci_if_error: false
 
     - name: Upload coverage artifacts
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: coverage-report
         path: |
@@ -450,8 +450,8 @@ jobs:
            [ "${{ needs.code-quality.result }}" != "success" ] || 
            [ "${{ needs.integration-tests.result }}" != "success" ] ||
            [ "${{ needs.security.result }}" != "success" ]; then
-          echo " One or more critical jobs failed"
+          echo "❌ One or more critical jobs failed"
           exit 1
         fi
         
-        echo "All critical jobs passed successfully"
+        echo "✅ All critical jobs passed successfully"
