@@ -3,23 +3,7 @@ CLI  for generating JATS XML citations from DOIs using multiple academic data pr
 
 ![CI/CD Pipeline](https://github.com/withanage/doi2jats/actions/workflows/main.yml/badge.svg?branch=main)
 
-## Installation
 
-
-### Using Composer (Recommended)
-
-```bash
-- git clone https://github.com/withanage/doi2jats/
-- cd doi2jats
-- composer install
-
-```
-
-### Without Composer
-
-The application includes a fallback PSR-4 autoloader, so it works without Composer.
-
-## Usage
 
 ### Basic Usage (Single DOI)
 
@@ -58,6 +42,25 @@ php doi2jats.php --format back 10.30430/gjae.2023.0350 10.52825/bis.v1i.42
 # Verbose + reflist format
 php doi2jats.php -v -f reflist 10.30430/gjae.2023.0350 10.52825/bis.v1i.42
 ```
+
+
+## Installation
+
+
+### Using Composer (Recommended)
+
+```bash
+git clone https://github.com/withanage/doi2jats/
+cd doi2jats
+composer install
+
+```
+
+### Without Composer
+
+The application includes a fallback PSR-4 autoloader, so it works without Composer.
+
+## Usage
 
 ### Command-Line Options
 
