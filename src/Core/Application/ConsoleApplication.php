@@ -210,7 +210,6 @@ final class ConsoleApplication
     private function outputIndividual(array $citations, array $errors): void
     {
         foreach ($citations as $result) {
-            echo "<!-- DOI: {$result['doi']} -->\n";
             echo $result['citation'] . "\n";
         }
 
@@ -226,7 +225,6 @@ final class ConsoleApplication
         echo "<ref-list>\n";
 
         foreach ($citations as $index => $result) {
-            echo "  <!-- DOI: {$result['doi']} -->\n";
             echo "  <ref id=\"ref" . ($index + 1) . "\">\n";
 
             $citationXml = $result['citation'];
@@ -267,7 +265,6 @@ final class ConsoleApplication
                 continue;
             }
 
-            echo "    <!-- DOI: {$result['doi']} -->\n";
             echo "    <ref id=\"bib" . ($index + 1) . "\">\n";
             echo "      <label>" . ($index + 1) . ".</label>\n";
 
