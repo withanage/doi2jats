@@ -13,7 +13,7 @@ on:
       run_integration_tests:
         description: 'Run integration tests with live APIs'
         required: false
-        default: 'true'
+        default: true
         type: boolean
 
 env:
