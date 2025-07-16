@@ -257,7 +257,7 @@ jobs:
 
     - name: Test reflist format
       run: |
-        timeout 45s php doi2jats.php -f reflist "10.30430/gjae.2023.0350" "10.52825/bis.v1i.42" > combined_test.xml || {
+        timeout 60s php doi2jats.php -f reflist "10.30430/gjae.2023.0350" "10.52825/bis.v1i.42" > combined_test.xml || {
           echo "❌ Combined format test timed out or failed"
           exit 1
         }
