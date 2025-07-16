@@ -15,7 +15,7 @@ final class ConsoleApplication
 {
     private CitationService $citationService;
     private bool $verbose = false;
-    private string $outputFormat = 'individual'; // individual, combined, bibliography
+    private string $outputFormat = 'individual'; // individual, reflist, back
 
     public function __construct()
     {
@@ -71,17 +71,17 @@ final class ConsoleApplication
         echo "  php doi2jats.php [OPTIONS] <DOI1> [DOI2] [DOI3] ...\n\n";
         echo "Options:\n";
         echo "  -v, --verbose          Show detailed processing information\n";
-        echo "  -f, --format FORMAT    Output format: individual, combined, bibliography\n";
+        echo "  -f, --format FORMAT    Output format: individual, reflist, back\n";
         echo "  -h, --help             Show this help message\n\n";
         echo "Output Formats:\n";
         echo "  individual    Each citation as separate XML (default)\n";
-        echo "  combined      All citations in a <ref-list> wrapper\n";
-        echo "  bibliography  Full bibliography format with labels\n\n";
+        echo "  reflist      All citations in a <ref-list> wrapper\n";
+        echo "  back  Full back format with labels\n\n";
         echo "Examples:\n";
         echo "  php doi2jats.php 10.30430/gjae.2023.0350\n";
         echo "  php doi2jats.php 10.30430/gjae.2023.0350 10.52825/bis.v1i.42\n";
-        echo "  php doi2jats.php -v -f combined 10.30430/gjae.2023.0350 10.52825/bis.v1i.42\n";
-        echo "  php doi2jats.php --format bibliography 10.30430/gjae.2023.0350 10.52825/bis.v1i.42\n\n";
+        echo "  php doi2jats.php -v -f reflist 10.30430/gjae.2023.0350 10.52825/bis.v1i.42\n";
+        echo "  php doi2jats.php --format back 10.30430/gjae.2023.0350 10.52825/bis.v1i.42\n\n";
     }
 
     private function parseArguments(array $args): array
@@ -103,8 +103,8 @@ final class ConsoleApplication
                 case '--format':
                     if (isset($args[$i + 1])) {
                         $format = $args[++$i];
-                        if (! in_array($format, ['individual', 'combined', 'bibliography'], true)) {
-                            fwrite(STDERR, "Invalid format: {$format}. Use: individual, combined, or bibliography\n");
+                        if (! in_array($format, ['individual', 'reflist', 'back'], true)) {
+                            fwrite(STDERR, "Invalid format: {$format}. Use: individual, reflist, or back\n");
                             exit(1);
                         }
                     }
@@ -169,11 +169,11 @@ final class ConsoleApplication
                 $this->outputIndividual($citations, $errors);
 
                 break;
-            case 'combined':
+            case 'reflist':
                 $this->outputCombined($citations, $errors);
 
                 break;
-            case 'bibliography':
+            case 'back':
                 $this->outputBibliography($citations, $errors);
 
                 break;

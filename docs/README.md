@@ -43,5 +43,5 @@ This project follows Domain-Driven Design (DDD) principles with clear separation
 
 ```bash
 php doi2jats.php 10.30430/gjae.2023.0350
-php doi2jats.php -v -f combined 10.30430/gjae.2023.0350 10.52825/bis.v1i.42
+php doi2jats.php -v -f reflist 10.30430/gjae.2023.0350 10.52825/bis.v1i.42
 ```

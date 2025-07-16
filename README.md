@@ -49,13 +49,13 @@ php doi2jats.php 10.30430/gjae.2023.0350 10.52825/bis.v1i.42
 php doi2jats.php -v 10.30430/gjae.2023.0350 10.52825/bis.v1i.42
 
 # Combined format (all citations in ref-list)
-php doi2jats.php -f combined 10.30430/gjae.2023.0350 10.52825/bis.v1i.42
+php doi2jats.php -f reflist 10.30430/gjae.2023.0350 10.52825/bis.v1i.42
 
 # Bibliography format with numbering
-php doi2jats.php --format bibliography 10.30430/gjae.2023.0350 10.52825/bis.v1i.42
+php doi2jats.php --format back 10.30430/gjae.2023.0350 10.52825/bis.v1i.42
 
-# Verbose + combined format
-php doi2jats.php -v -f combined 10.30430/gjae.2023.0350 10.52825/bis.v1i.42
+# Verbose + reflist format
+php doi2jats.php -v -f reflist 10.30430/gjae.2023.0350 10.52825/bis.v1i.42
 ```
 
 ### Command-Line Options
@@ -63,7 +63,7 @@ php doi2jats.php -v -f combined 10.30430/gjae.2023.0350 10.52825/bis.v1i.42
 | Option | Description |
 |--------|-------------|
 | `-v, --verbose` | Show detailed processing information |
-| `-f, --format FORMAT` | Output format: `individual`, `combined`, `bibliography` |
+| `-f, --format FORMAT` | Output format: `individual`, `reflist`, `back` |
 | `-h, --help` | Show help message |
 
 ### Output Formats
@@ -103,7 +103,7 @@ All citations wrapped in a reference list:
 ```
 
 #### Bibliography
-Full bibliography format with labels:
+Full back format with labels:
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <back>
@@ -187,7 +187,7 @@ composer test
 - PHP 8.0 or higher
 - ext-dom
 - ext-json
-- ext-simplexml (for XML manipulation in combined formats)
+- ext-simplexml (for XML manipulation in reflist formats)
 
 # Development
 
