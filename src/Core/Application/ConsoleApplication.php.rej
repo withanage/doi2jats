@@ -1,0 +1,74 @@
+--- src/Core/Application/ConsoleApplication.php
++++ src/Core/Application/ConsoleApplication.php
+@@ -33,7 +33,7 @@ class ConsoleApplication
+     /**
+      * Run the application
+      */
+-    public function run(array $args): void
++    public function run(array<string> $args): void
+     {
+         try {
+             $parsedArgs = $this->parseArguments($args);
+@@ -84,7 +84,7 @@ class ConsoleApplication
+     /**
+      * Parse command line arguments
+      */
+-    private function parseArguments(array $args): array
++    private function parseArguments(array<string> $args): array<string, mixed>
+     {
+         $parsed = [
+             'dois' => [],
+@@ -129,7 +129,7 @@ class ConsoleApplication
+     /**
+      * Process multiple DOIs
+      */
+-    private function processDois(array $dois): void
++    private function processDois(array<string> $dois): void
+     {
+         $citations = [];
+         $errors = [];
+@@ -162,7 +162,7 @@ class ConsoleApplication
+     /**
+      * Output results based on format
+      */
+-    private function outputResults(array $citations, array $errors): void
++    private function outputResults(array<string, mixed> $citations, array<string, string> $errors): void
+     {
+         switch ($this->format) {
+             case 'individual':
+@@ -185,7 +185,7 @@ class ConsoleApplication
+     /**
+      * Output individual citations
+      */
+-    private function outputIndividual(array $citations, array $errors): void
++    private function outputIndividual(array<string, mixed> $citations, array<string, string> $errors): void
+     {
+         foreach ($citations as $doi => $citation) {
+             echo "DOI: {$doi}\n";
+@@ -197,7 +197,7 @@ class ConsoleApplication
+     /**
+      * Output combined citations
+      */
+-    private function outputCombined(array $citations, array $errors): void
++    private function outputCombined(array<string, mixed> $citations, array<string, string> $errors): void
+     {
+         $combined = [];
+         foreach ($citations as $citation) {
+@@ -222,7 +222,7 @@ class ConsoleApplication
+     /**
+      * Output bibliography format
+      */
+-    private function outputBibliography(array $citations, array $errors): void
++    private function outputBibliography(array<string, mixed> $citations, array<string, string> $errors): void
+     {
+         echo "<bibliography>\n";
+         foreach ($citations as $citation) {
+@@ -251,7 +251,7 @@ class ConsoleApplication
+     /**
+      * Output summary statistics
+      */
+-    private function outputSummary(array $citations, array $errors): void
++    private function outputSummary(array<string, mixed> $citations, array<string, string> $errors): void
+     {
+         $total = count($citations) + count($errors);
+         $successful = count($citations);

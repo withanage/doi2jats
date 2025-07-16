@@ -33,10 +33,6 @@ final class ConsoleApplication
         $this->citationService = new CitationService($providers, $xmlBuilder);
     }
 
-    /**
-     * @param string $args
-     * @return void
-     */
     public function run(array $args): void
     {
         if (count($args) < 2) {
@@ -88,11 +84,6 @@ final class ConsoleApplication
         echo "  php doi2jats.php --format back 10.30430/gjae.2023.0350 10.52825/bis.v1i.42\n\n";
     }
 
-
-    /**
-     * @param string $args
-     * @return array
-     */
     private function parseArguments(array $args): array
     {
         $dois = [];
@@ -138,10 +129,6 @@ final class ConsoleApplication
         ];
     }
 
-
-    /**
-     * @param string[] $dois
-     */
     private function processDois(array $dois): void
     {
         $citations = [];
@@ -175,10 +162,6 @@ final class ConsoleApplication
         $this->outputResults($citations, $errors);
     }
 
-    /**
-     * @param string[] $citations
-     * @param string[] $errors
-     */
     private function outputResults(array $citations, array $errors): void
     {
         switch ($this->outputFormat) {
@@ -202,8 +185,6 @@ final class ConsoleApplication
         }
     }
 
-
-
     private function outputIndividual(array $citations, array $errors): void
     {
         foreach ($citations as $result) {
@@ -216,10 +197,6 @@ final class ConsoleApplication
         }
     }
 
-    /**
-     * @param string[] $citations
-     * @param string[] $errors
-     */
     private function outputCombined(array $citations, array $errors): void
     {
         echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
@@ -245,11 +222,6 @@ final class ConsoleApplication
         echo "</ref-list>\n";
     }
 
-
-    /**
-     * @param string[] $citations
-     * @param string[] $errors
-     */
     private function outputBibliography(array $citations, array $errors): void
     {
         echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
@@ -279,10 +251,6 @@ final class ConsoleApplication
         echo "</back>\n";
     }
 
-    /**
-     * @param string[] $citations
-     * @param string[] $errors
-     */
     private function outputSummary(array $citations, array $errors): void
     {
         $total = count($citations) + count($errors);

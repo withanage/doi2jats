@@ -1,0 +1,11 @@
+--- src/Domain/Citation/CitationDataInterface.php
++++ src/Domain/Citation/CitationDataInterface.php
+@@ -7,7 +7,7 @@ interface CitationDataInterface
+ {
+     public function getTitle(): string;
+     
+-    public function getAuthors(): array;
++    public function getAuthors(): array<string>;
+     
+     public function getJournal(): string;
+     

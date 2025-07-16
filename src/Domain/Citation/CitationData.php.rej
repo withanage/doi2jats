@@ -1,0 +1,29 @@
+--- src/Domain/Citation/CitationData.php
++++ src/Domain/Citation/CitationData.php
+@@ -6,7 +6,7 @@ class CitationData implements CitationDataInterface
+ {
+     public function __construct(
+         private string $title,
+-        private array $authors,
++        private array<string> $authors,
+         private string $journal,
+         private string $year,
+         private string $doi,
+@@ -22,7 +22,7 @@ class CitationData implements CitationDataInterface
+     /**
+      * Create instance from array data
+      */
+-    public static function fromArray(array $data): self
++    public static function fromArray(array<string, mixed> $data): self
+     {
+         return new self(
+             title: $data['title'] ?? '',
+@@ -44,7 +44,7 @@ class CitationData implements CitationDataInterface
+         return $this->title;
+     }
+ 
+-    public function getAuthors(): array
++    public function getAuthors(): array<string>
+     {
+         return $this->authors;
+     }
