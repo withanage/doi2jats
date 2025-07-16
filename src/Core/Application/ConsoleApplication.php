@@ -216,10 +216,7 @@ final class ConsoleApplication
         }
     }
 
-    /**
-     * @param string[] $citations
-     * @param string[] $errors
-     */
+ 
     private function outputCombined(array $citations, array $errors): void
     {
         echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
