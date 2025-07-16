@@ -296,10 +296,7 @@ final class ConsoleApplication
         echo "</back>\n";
     }
 
-    /**
-     * @param string[] $citations
-     * @param string[] $errors
-     */
+
     private function outputSummary(array $citations, array $errors): void
     {
         $total = count($citations) + count($errors);
@@ -314,8 +311,16 @@ final class ConsoleApplication
         if (! empty($errors)) {
             fwrite(STDERR, "\nFailed DOIs:\n");
             foreach ($errors as $error) {
-                fwrite(STDERR, "  - {$error['doi']}: {$error['error']}\n");
+                // Handle both array and string error formats
+                if (is_array($error) && isset($error['doi'], $error['error'])) {
+                    fwrite(STDERR, "  - {$error['doi']}: {$error['error']}\n");
+                } elseif (is_string($error)) {
+                    fwrite(STDERR, "  - {$error}\n");
+                } else {
+                    fwrite(STDERR, "  - Invalid error format\n");
+                }
             }
         }
     }
+
 }
