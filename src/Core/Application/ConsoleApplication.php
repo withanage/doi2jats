@@ -93,6 +93,13 @@ final class ConsoleApplication
      * @param string $args
      * @return array
      */
+
+    /**
+     * Parse command line arguments into structured data
+     *
+     * @param array $args Command line arguments array
+     * @return array Parsed arguments with keys: dois, verbose, format
+     */
     private function parseArguments(array $args): array
     {
         $dois = [];
@@ -137,7 +144,6 @@ final class ConsoleApplication
             'format' => $format,
         ];
     }
-
 
     /**
      * @param string[] $dois
@@ -244,8 +250,10 @@ final class ConsoleApplication
 
 
     /**
-     * @param string[] $citations
-     * @param string[] $errors
+     * Output bibliography in XML format
+     *
+     * @param array $citations Array of citation arrays with 'doi' and 'citation' keys
+     * @param array $errors Array of error arrays with 'doi' and 'error' keys
      */
     private function outputBibliography(array $citations, array $errors): void
     {
@@ -255,6 +263,12 @@ final class ConsoleApplication
         echo "    <title>References</title>\n";
 
         foreach ($citations as $index => $result) {
+            // Ensure $result is an array and has required keys
+            if (!is_array($result) || !isset($result['doi'], $result['citation'])) {
+                echo "    <!-- ERROR: Invalid citation data at index {$index} -->\n";
+                continue;
+            }
+
             echo "    <!-- DOI: {$result['doi']} -->\n";
             echo "    <ref id=\"bib" . ($index + 1) . "\">\n";
             echo "      <label>" . ($index + 1) . ".</label>\n";
@@ -269,6 +283,12 @@ final class ConsoleApplication
         }
 
         foreach ($errors as $error) {
+            // Ensure $error is an array and has required keys
+            if (!is_array($error) || !isset($error['doi'], $error['error'])) {
+                echo "    <!-- ERROR: Invalid error data structure -->\n";
+                continue;
+            }
+
             echo "    <!-- ERROR: {$error['doi']} - {$error['error']} -->\n";
         }
 
