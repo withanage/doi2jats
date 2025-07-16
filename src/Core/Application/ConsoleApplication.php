@@ -146,11 +146,6 @@ final class ConsoleApplication
     }
 
 
-    /**
-     * Process an array of DOIs and generate citations
-     *
-     * @param string[] $dois Array of DOI strings to process
-     */
     private function processDois(array $dois): void
     {
         $citations = [];
@@ -183,34 +178,33 @@ final class ConsoleApplication
 
         $this->outputResults($citations, $errors);
     }
-
     /**
-     * Output the results of DOI processing
-     *
-     * @param array<int, array{doi: string, citation: string, success: true}> $citations
-     * @param array<int, array{doi: string, error: string, success: false}> $errors
+     * @param string[] $citations
+     * @param string[] $errors
      */
     private function outputResults(array $citations, array $errors): void
     {
-        // Handle different output formats
-        switch ($this->format) {
+        switch ($this->outputFormat) {
             case 'individual':
                 $this->outputIndividual($citations, $errors);
+
                 break;
             case 'reflist':
-                $this->outputReflist($citations, $errors);
+                $this->outputCombined($citations, $errors);
+
                 break;
             case 'back':
                 $this->outputBibliography($citations, $errors);
+
                 break;
-            default:
-                $this->outputIndividual($citations, $errors);
         }
 
-        if ($this->verbose) {
+        // Output summary if verbose or if there were errors
+        if ($this->verbose || ! empty($errors)) {
             $this->outputSummary($citations, $errors);
         }
     }
+
 
 
     private function outputIndividual(array $citations, array $errors): void
