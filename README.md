@@ -1,6 +1,7 @@
 # Citation Generator
 
 CLI  for generating JATS XML citations from DOIs using multiple academic data providers.
+[![CI/CD Pipeline](https://github.com/withanage/doi2jats/actions/workflows/main.yml/badge.svg)](https://github.com/withanage/doi2jats/actions/workflows/main.yml)
 
 ## Installation
 
