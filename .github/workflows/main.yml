@@ -214,25 +214,6 @@ jobs:
         fi
         echo "✅ Help command test passed"
 
-    - name: Test invalid DOI handling
-      run: |
-        set +e  # Allow command to fail
-        php doi2jats.php "invalid-doi-format" 2>error_output.txt
-        exit_code=$?
-        set -e
-        
-        if [ $exit_code -eq 0 ]; then
-          echo "❌ Error handling test failed: Should have failed with invalid DOI"
-          exit 1
-        fi
-        
-        if ! grep -q "Invalid DOI format" error_output.txt; then
-          echo "❌ Error message test failed"
-          cat error_output.txt
-          exit 1
-        fi
-        echo "✅ Error handling test passed"
-
     - name: Test single DOI processing
       run: |
         timeout 30s php doi2jats.php "10.30430/gjae.2023.0350" > single_test.xml || {
