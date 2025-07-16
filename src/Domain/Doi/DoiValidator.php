@@ -25,7 +25,7 @@ final class DoiValidator
         $doi = preg_replace('#^(https?://)?(?:dx\.)?doi\.org/#', '', $doi);
 
         // Basic DOI format validation
-        if (!preg_match(self::DOI_PATTERN, $doi)) {
+        if (! preg_match(self::DOI_PATTERN, $doi)) {
             throw new InvalidDoiException($doi);
         }
 

@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace CitationGenerator\Service;
 
-use CitationGenerator\Domain\Provider\CitationProviderInterface;
-use CitationGenerator\Domain\Provider\XmlBuilderInterface;
-use CitationGenerator\Domain\Doi\DoiValidator;
 use CitationGenerator\Core\Exception\CitationException;
 use CitationGenerator\Core\Exception\ProviderException;
+use CitationGenerator\Domain\Doi\DoiValidator;
+use CitationGenerator\Domain\Provider\CitationProviderInterface;
+use CitationGenerator\Domain\Provider\XmlBuilderInterface;
 
 final class CitationService
 {
@@ -38,6 +38,7 @@ final class CitationService
             } catch (ProviderException $e) {
                 // Log error but continue to next provider
                 error_log("Provider {$provider->getProviderName()} failed: {$e->getMessage()}");
+
                 continue;
             }
         }

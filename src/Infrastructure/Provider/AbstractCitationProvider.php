@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace CitationGenerator\Infrastructure\Provider;
 
-use CitationGenerator\Domain\Provider\CitationProviderInterface;
 use CitationGenerator\Core\Exception\ProviderException;
+use CitationGenerator\Domain\Provider\CitationProviderInterface;
 
 abstract class AbstractCitationProvider implements CitationProviderInterface
 {
@@ -16,7 +16,7 @@ abstract class AbstractCitationProvider implements CitationProviderInterface
     {
         $this->baseUrl = rtrim($baseUrl, '/');
         $this->defaultHeaders = array_merge([
-            'User-Agent' => 'Citation Generator/1.0'
+            'User-Agent' => 'Citation Generator/1.0',
         ], $defaultHeaders);
     }
 
@@ -29,8 +29,8 @@ abstract class AbstractCitationProvider implements CitationProviderInterface
             'http' => [
                 'header' => $this->buildHeaders(array_merge($this->defaultHeaders, $headers)),
                 'timeout' => 10,
-                'ignore_errors' => true
-            ]
+                'ignore_errors' => true,
+            ],
         ]);
 
         $response = @file_get_contents($url, false, $context);
@@ -57,6 +57,7 @@ abstract class AbstractCitationProvider implements CitationProviderInterface
         foreach ($headers as $key => $value) {
             $headerLines[] = "{$key}: {$value}";
         }
+
         return implode("\r\n", $headerLines);
     }
 

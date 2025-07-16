@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace CitationGenerator\Core\Application;
 
-use CitationGenerator\Service\CitationService;
+use CitationGenerator\Core\Exception\CitationException;
+use CitationGenerator\Core\Exception\InvalidDoiException;
 use CitationGenerator\Infrastructure\Provider\CrossrefProvider;
 use CitationGenerator\Infrastructure\Provider\OpenAlexProvider;
 use CitationGenerator\Infrastructure\Xml\JatsXmlBuilder;
-use CitationGenerator\Core\Exception\InvalidDoiException;
-use CitationGenerator\Core\Exception\CitationException;
+use CitationGenerator\Service\CitationService;
 
 final class ConsoleApplication
 {
@@ -26,7 +26,7 @@ final class ConsoleApplication
     {
         $providers = [
             new CrossrefProvider(),
-            new OpenAlexProvider()
+            new OpenAlexProvider(),
         ];
 
         $xmlBuilder = new JatsXmlBuilder();
@@ -97,16 +97,18 @@ final class ConsoleApplication
                 case '-v':
                 case '--verbose':
                     $verbose = true;
+
                     break;
                 case '-f':
                 case '--format':
                     if (isset($args[$i + 1])) {
                         $format = $args[++$i];
-                        if (!in_array($format, ['individual', 'combined', 'bibliography'], true)) {
+                        if (! in_array($format, ['individual', 'combined', 'bibliography'], true)) {
                             fwrite(STDERR, "Invalid format: {$format}. Use: individual, combined, or bibliography\n");
                             exit(1);
                         }
                     }
+
                     break;
                 case '-h':
                 case '--help':
@@ -115,6 +117,7 @@ final class ConsoleApplication
                 default:
                     // Assume it's a DOI
                     $dois[] = $arg;
+
                     break;
             }
         }
@@ -122,7 +125,7 @@ final class ConsoleApplication
         return [
             'dois' => $dois,
             'verbose' => $verbose,
-            'format' => $format
+            'format' => $format,
         ];
     }
 
@@ -141,13 +144,13 @@ final class ConsoleApplication
                 $citations[] = [
                     'doi' => $doi,
                     'citation' => $citation,
-                    'success' => true
+                    'success' => true,
                 ];
             } catch (InvalidDoiException|CitationException $e) {
                 $errors[] = [
                     'doi' => $doi,
                     'error' => $e->getMessage(),
-                    'success' => false
+                    'success' => false,
                 ];
 
                 if ($this->verbose) {
@@ -164,17 +167,20 @@ final class ConsoleApplication
         switch ($this->outputFormat) {
             case 'individual':
                 $this->outputIndividual($citations, $errors);
+
                 break;
             case 'combined':
                 $this->outputCombined($citations, $errors);
+
                 break;
             case 'bibliography':
                 $this->outputBibliography($citations, $errors);
+
                 break;
         }
 
         // Output summary if verbose or if there were errors
-        if ($this->verbose || !empty($errors)) {
+        if ($this->verbose || ! empty($errors)) {
             $this->outputSummary($citations, $errors);
         }
     }
@@ -256,7 +262,7 @@ final class ConsoleApplication
         fwrite(STDERR, "Successful: {$successful}\n");
         fwrite(STDERR, "Failed: {$failed}\n");
 
-        if (!empty($errors)) {
+        if (! empty($errors)) {
             fwrite(STDERR, "\nFailed DOIs:\n");
             foreach ($errors as $error) {
                 fwrite(STDERR, "  - {$error['doi']}: {$error['error']}\n");

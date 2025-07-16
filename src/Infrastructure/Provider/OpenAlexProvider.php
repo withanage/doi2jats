@@ -19,7 +19,7 @@ final class OpenAlexProvider extends AbstractCitationProvider
             $url = $this->baseUrl . '/https://doi.org/' . urlencode($doi);
             $response = $this->makeRequest($url);
 
-            if (!$response) {
+            if (! $response) {
                 return null;
             }
 
@@ -45,7 +45,7 @@ final class OpenAlexProvider extends AbstractCitationProvider
 
             $authors[] = [
                 'family' => $family,
-                'given' => $given
+                'given' => $given,
             ];
         }
 
@@ -64,7 +64,7 @@ final class OpenAlexProvider extends AbstractCitationProvider
             'first_page' => $venue['first_page'] ?? null,
             'last_page' => $venue['last_page'] ?? null,
             'page_range' => $venue['page_range'] ?? null,
-            'doi' => $rawData['doi'] ?? null
+            'doi' => $rawData['doi'] ?? null,
         ];
     }
 
@@ -75,10 +75,11 @@ final class OpenAlexProvider extends AbstractCitationProvider
         }
 
         $parts = explode('-', $dateString);
+
         return [
             'year' => isset($parts[0]) ? (int)$parts[0] : null,
             'month' => isset($parts[1]) ? (int)$parts[1] : null,
-            'day' => isset($parts[2]) ? (int)$parts[2] : null
+            'day' => isset($parts[2]) ? (int)$parts[2] : null,
         ];
     }
 }

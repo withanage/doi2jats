@@ -20,7 +20,7 @@ final class CrossrefProvider extends AbstractCitationProvider
             $response = $this->makeRequest($url);
 
             $message = $response['message'] ?? null;
-            if (!$message) {
+            if (! $message) {
                 return null;
             }
 
@@ -41,7 +41,7 @@ final class CrossrefProvider extends AbstractCitationProvider
         foreach ($rawData['author'] ?? [] as $author) {
             $authors[] = [
                 'family' => $author['family'] ?? '',
-                'given' => $author['given'] ?? ''
+                'given' => $author['given'] ?? '',
             ];
         }
 
@@ -61,7 +61,7 @@ final class CrossrefProvider extends AbstractCitationProvider
             'issue' => $rawData['issue'] ?? null,
             'first_page' => $pageData['first'] ?? null,
             'last_page' => $pageData['last'] ?? null,
-            'doi' => $rawData['DOI'] ?? null
+            'doi' => $rawData['DOI'] ?? null,
         ];
     }
 
@@ -72,9 +72,10 @@ final class CrossrefProvider extends AbstractCitationProvider
         }
 
         $pages = explode('-', $pageString);
+
         return [
             'first' => $pages[0] ?? null,
-            'last' => $pages[1] ?? null
+            'last' => $pages[1] ?? null,
         ];
     }
 }

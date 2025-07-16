@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace CitationGenerator\Infrastructure\Xml;
 
-use CitationGenerator\Domain\Provider\XmlBuilderInterface;
 use CitationGenerator\Domain\Citation\CitationData;
 use CitationGenerator\Domain\Citation\CitationDataInterface;
+use CitationGenerator\Domain\Provider\XmlBuilderInterface;
 use DOMDocument;
 use DOMElement;
 
@@ -49,7 +49,7 @@ final class JatsXmlBuilder implements XmlBuilderInterface
             $name = $this->document->createElement('name');
             $this->addElement($name, 'surname', $author['family'] ?? '');
 
-            if (!empty($author['given'])) {
+            if (! empty($author['given'])) {
                 $this->addElement($name, 'given-names', $author['given']);
             }
 
@@ -63,7 +63,7 @@ final class JatsXmlBuilder implements XmlBuilderInterface
         $dateElements = [
             'year' => $citation->getYear(),
             'month' => $citation->getMonth(),
-            'day' => $citation->getDay()
+            'day' => $citation->getDay(),
         ];
 
         foreach ($dateElements as $tag => $value) {
