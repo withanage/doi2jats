@@ -18,7 +18,8 @@ final class CitationService
     public function __construct(
         private array $providers,
         private XmlBuilderInterface $xmlBuilder
-    ) {}
+    ) {
+    }
 
     /**
      * Generate citation XML for given DOI
@@ -26,11 +27,11 @@ final class CitationService
     public function generateCitation(string $doi): string
     {
         $validatedDoi = DoiValidator::validate($doi);
-        
+
         foreach ($this->providers as $provider) {
             try {
                 $citationData = $provider->getCitationData($validatedDoi);
-                
+
                 if ($citationData !== null) {
                     return $this->xmlBuilder->buildCitation($citationData);
                 }

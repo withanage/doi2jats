@@ -19,7 +19,8 @@ final class CitationData implements CitationDataInterface
         private ?string $lastPage = null,
         private ?string $pageRange = null,
         private ?string $doi = null
-    ) {}
+    ) {
+    }
 
     public static function fromArray(array $data): self
     {
@@ -39,16 +40,52 @@ final class CitationData implements CitationDataInterface
         );
     }
 
-    public function getTitle(): ?string { return $this->title; }
-    public function getAuthors(): array { return $this->authors; }
-    public function getSource(): ?string { return $this->source; }
-    public function getYear(): ?int { return $this->year; }
-    public function getMonth(): ?int { return $this->month; }
-    public function getDay(): ?int { return $this->day; }
-    public function getVolume(): ?string { return $this->volume; }
-    public function getIssue(): ?string { return $this->issue; }
-    public function getFirstPage(): ?string { return $this->firstPage; }
-    public function getLastPage(): ?string { return $this->lastPage; }
-    public function getPageRange(): ?string { return $this->pageRange; }
-    public function getDoi(): ?string { return $this->doi; }
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
+    public function getAuthors(): array
+    {
+        return $this->authors;
+    }
+    public function getSource(): ?string
+    {
+        return $this->source;
+    }
+    public function getYear(): ?int
+    {
+        return $this->year;
+    }
+    public function getMonth(): ?int
+    {
+        return $this->month;
+    }
+    public function getDay(): ?int
+    {
+        return $this->day;
+    }
+    public function getVolume(): ?string
+    {
+        return $this->volume;
+    }
+    public function getIssue(): ?string
+    {
+        return $this->issue;
+    }
+    public function getFirstPage(): ?string
+    {
+        return $this->firstPage;
+    }
+    public function getLastPage(): ?string
+    {
+        return $this->lastPage;
+    }
+    public function getPageRange(): ?string
+    {
+        return $this->pageRange;
+    }
+    public function getDoi(): ?string
+    {
+        return $this->doi;
+    }
 }

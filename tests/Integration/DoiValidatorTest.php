@@ -14,7 +14,7 @@ final class DoiValidatorTest extends TestCase
     {
         $doi = '10.30430/gjae.2023.0350';
         $result = DoiValidator::validate($doi);
-        
+
         $this->assertEquals($doi, $result);
     }
 

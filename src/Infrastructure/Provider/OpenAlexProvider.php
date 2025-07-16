@@ -18,7 +18,7 @@ final class OpenAlexProvider extends AbstractCitationProvider
         try {
             $url = $this->baseUrl . '/https://doi.org/' . urlencode($doi);
             $response = $this->makeRequest($url);
-            
+
             if (!$response) {
                 return null;
             }

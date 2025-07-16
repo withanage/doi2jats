@@ -34,13 +34,13 @@ abstract class AbstractCitationProvider implements CitationProviderInterface
         ]);
 
         $response = @file_get_contents($url, false, $context);
-        
+
         if ($response === false) {
             throw new ProviderException($this->getProviderName(), "Failed to fetch data from {$url}");
         }
 
         $data = json_decode($response, true);
-        
+
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new ProviderException($this->getProviderName(), "Invalid JSON response");
         }

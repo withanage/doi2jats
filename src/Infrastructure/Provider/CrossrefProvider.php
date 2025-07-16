@@ -18,7 +18,7 @@ final class CrossrefProvider extends AbstractCitationProvider
         try {
             $url = $this->baseUrl . '/' . urlencode($doi);
             $response = $this->makeRequest($url);
-            
+
             $message = $response['message'] ?? null;
             if (!$message) {
                 return null;
@@ -45,7 +45,7 @@ final class CrossrefProvider extends AbstractCitationProvider
             ];
         }
 
-        $publishedDate = $rawData['published-print']['date-parts'][0] ?? 
+        $publishedDate = $rawData['published-print']['date-parts'][0] ??
                         $rawData['published-online']['date-parts'][0] ?? [];
 
         $pageData = $this->extractPageData($rawData['page'] ?? '');

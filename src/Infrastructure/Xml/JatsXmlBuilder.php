@@ -23,7 +23,7 @@ final class JatsXmlBuilder implements XmlBuilderInterface
     public function buildCitation(array $citationData): string
     {
         $citation = CitationData::fromArray($citationData);
-        
+
         $elementCitation = $this->document->createElement('element-citation');
         $elementCitation->setAttribute('publication-type', 'journal');
         $this->document->appendChild($elementCitation);
@@ -45,14 +45,14 @@ final class JatsXmlBuilder implements XmlBuilderInterface
         foreach ($authors as $author) {
             $personGroup = $this->document->createElement('person-group');
             $personGroup->setAttribute('person-group-type', 'author');
-            
+
             $name = $this->document->createElement('name');
             $this->addElement($name, 'surname', $author['family'] ?? '');
-            
+
             if (!empty($author['given'])) {
                 $this->addElement($name, 'given-names', $author['given']);
             }
-            
+
             $personGroup->appendChild($name);
             $parent->appendChild($personGroup);
         }
