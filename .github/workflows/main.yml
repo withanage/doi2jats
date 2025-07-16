@@ -274,9 +274,9 @@ jobs:
         fi
         echo "✅ Multi-DOI test passed: Generated $citation_count citations"
 
-    - name: Test combined format
+    - name: Test reflist format
       run: |
-        timeout 45s php doi2jats.php -f combined "10.30430/gjae.2023.0350" "10.52825/bis.v1i.42" > combined_test.xml || {
+        timeout 45s php doi2jats.php -f reflist "10.30430/gjae.2023.0350" "10.52825/bis.v1i.42" > combined_test.xml || {
           echo "❌ Combined format test timed out or failed"
           exit 1
         }
@@ -293,9 +293,9 @@ jobs:
         fi
         echo "✅ Combined format test passed"
 
-    - name: Test bibliography format
+    - name: Test back format
       run: |
-        timeout 45s php doi2jats.php -f bibliography "10.30430/gjae.2023.0350" > bib_test.xml || {
+        timeout 45s php doi2jats.php -f back "10.30430/gjae.2023.0350" > bib_test.xml || {
           echo "❌ Bibliography format test timed out or failed"
           exit 1
         }
