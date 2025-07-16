@@ -34,7 +34,7 @@ final class ConsoleApplication
     }
 
     /**
-     * @param string $args
+     * @param string[] $args
      * @return void
      */
     public function run(array $args): void
