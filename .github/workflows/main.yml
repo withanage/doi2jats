@@ -235,7 +235,7 @@ jobs:
 
     - name: Test multiple DOIs processing
       run: |
-        timeout 60s php doi2jats.php -v "10.30430/gjae.2023.0350" "10.52825/bis.v1i.42" > multi_test.xml 2>multi_stderr.txt || {
+        timeout 60s php doi2jats.php  "10.30430/gjae.2023.0350" "10.52825/bis.v1i.42" > multi_test.xml 2>multi_stderr.txt || {
           echo "❌ Multi-DOI test timed out or failed"
           cat multi_stderr.txt
           exit 1
