@@ -1,11 +1,5 @@
 # Citation Generator
 ![CI/CD Pipeline](https://github.com/withanage/doi2jats/actions/workflows/main.yml/badge.svg?branch=main)
-![Validate](https://github.com/withanage/doi2jats/actions/workflows/main.yml/badge.svg?label=Validate&branch=main)
-![Tests](https://github.com/withanage/doi2jats/actions/workflows/main.yml/badge.svg?label=Tests&branch=main)
-![Code Quality](https://github.com/withanage/doi2jats/actions/workflows/main.yml/badge.svg?label=Code%20Quality&branch=main)
-![Integration Tests](https://github.com/withanage/doi2jats/actions/workflows/main.yml/badge.svg?label=Integration%20Tests&branch=main)
-![Security](https://github.com/withanage/doi2jats/actions/workflows/main.yml/badge.svg?label=Security&branch=main)
-![Coverage](https://github.com/withanage/doi2jats/actions/workflows/main.yml/badge.svg?label=Coverage&branch=main)
 
 
 CLI  for generating JATS XML citations from DOIs using multiple academic data providers.
