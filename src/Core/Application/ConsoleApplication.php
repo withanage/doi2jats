@@ -219,7 +219,7 @@ final class ConsoleApplication
         }
     }
 
- 
+
     private function outputCombined(array $citations, array $errors): void
     {
         echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
@@ -261,8 +261,9 @@ final class ConsoleApplication
 
         foreach ($citations as $index => $result) {
             // Ensure $result is an array and has required keys
-            if (!is_array($result) || !isset($result['doi'], $result['citation'])) {
+            if (! is_array($result) || ! isset($result['doi'], $result['citation'])) {
                 echo "    <!-- ERROR: Invalid citation data at index {$index} -->\n";
+
                 continue;
             }
 
@@ -281,8 +282,9 @@ final class ConsoleApplication
 
         foreach ($errors as $error) {
             // Ensure $error is an array and has required keys
-            if (!is_array($error) || !isset($error['doi'], $error['error'])) {
+            if (! is_array($error) || ! isset($error['doi'], $error['error'])) {
                 echo "    <!-- ERROR: Invalid error data structure -->\n";
+
                 continue;
             }
 
