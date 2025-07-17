@@ -6,6 +6,5 @@ namespace CitationGenerator\Domain\Provider;
 
 interface XmlBuilderInterface
 {
-
     public function buildCitation(array $citationData): string;
 }
