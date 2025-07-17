@@ -33,10 +33,10 @@ php doi2jats.php 10.30430/gjae.2023.0350 10.52825/bis.v1i.42
 # Verbose output with processing details
 php doi2jats.php -v 10.30430/gjae.2023.0350 10.52825/bis.v1i.42
 
-# Combined format (all citations in ref-list)
+# Ref-List format (all citations in ref-list)
 php doi2jats.php -f reflist 10.30430/gjae.2023.0350 10.52825/bis.v1i.42
 
-# Bibliography format with numbering
+# Back  format with numbering
 php doi2jats.php --format back 10.30430/gjae.2023.0350 10.52825/bis.v1i.42
 
 # Verbose + reflist format
