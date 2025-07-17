@@ -88,7 +88,7 @@ Each citation as separate XML documents:
 </element-citation>
 ```
 
-#### Combined
+####  REflist
 All citations wrapped in a reference list:
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -106,7 +106,7 @@ All citations wrapped in a reference list:
 </ref-list>
 ```
 
-#### Bibliography
+#### Back
 Full back format with labels:
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -133,10 +133,9 @@ Full back format with labels:
 
 The application handles various error scenarios:
 
-- **Invalid DOI format**: Shows specific error for malformed DOIs
-- **Network failures**: Gracefully handles API timeouts and connection issues
-- **Missing citations**: Tries multiple providers before failing
-- **Partial failures**: With multiple DOIs, successful citations are still output
+- Invalid DOI format: Shows specific error for malformed DOIs
+- Network failures:  handles API timeouts and connection issues
+
 
 ### Example with Errors
 
@@ -171,8 +170,9 @@ Failed DOIs:
   - invalid-doi: Invalid DOI format: invalid-doi
 ```
 
-#
+
 ## Development
+- PHP Coding and code reading required. tool does not contain method documentation.
 
 ### Testing
 
