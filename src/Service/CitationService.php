@@ -12,7 +12,6 @@ use CitationGenerator\Domain\Provider\XmlBuilderInterface;
 
 final class CitationService
 {
-
     public function __construct(
         private array $providers,
         private XmlBuilderInterface $xmlBuilder
