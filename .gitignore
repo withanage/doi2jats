@@ -22,3 +22,4 @@ clover.xml
 composer.lock
 .php-cs-fixer.cache
 .phpunit.cache/test-results
+combined_test.xml
