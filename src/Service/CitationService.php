@@ -12,13 +12,11 @@ use CitationGenerator\Domain\Provider\XmlBuilderInterface;
 
 final class CitationService
 {
-
     public function __construct(
         private array $providers,
         private XmlBuilderInterface $xmlBuilder
     ) {
     }
-
 
     public function generateCitation(string $doi): string
     {
@@ -32,16 +30,13 @@ final class CitationService
                     return $this->xmlBuilder->buildCitation($citationData);
                 }
             } catch (ProviderException $e) {
-
                 error_log("Provider {$provider->getProviderName()} failed: {$e->getMessage()}");
-
                 continue;
             }
         }
 
         throw new CitationException("No citation data found for DOI: {$validatedDoi}");
     }
-
 
     public function addProvider(CitationProviderInterface $provider): void
     {
