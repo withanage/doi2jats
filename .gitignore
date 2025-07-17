@@ -21,3 +21,4 @@ clover.xml
 # Composer
 composer.lock
 .php-cs-fixer.cache
+.phpunit.cache/test-results
