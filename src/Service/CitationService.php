@@ -12,18 +12,14 @@ use CitationGenerator\Domain\Provider\XmlBuilderInterface;
 
 final class CitationService
 {
-    /**
-     * @param array<CitationProviderInterface> $providers
-     */
+
     public function __construct(
         private array $providers,
         private XmlBuilderInterface $xmlBuilder
     ) {
     }
 
-    /**
-     * Generate citation XML for given DOI
-     */
+
     public function generateCitation(string $doi): string
     {
         $validatedDoi = DoiValidator::validate($doi);
@@ -36,7 +32,7 @@ final class CitationService
                     return $this->xmlBuilder->buildCitation($citationData);
                 }
             } catch (ProviderException $e) {
-                // Log error but continue to next provider
+
                 error_log("Provider {$provider->getProviderName()} failed: {$e->getMessage()}");
 
                 continue;
@@ -46,9 +42,7 @@ final class CitationService
         throw new CitationException("No citation data found for DOI: {$validatedDoi}");
     }
 
-    /**
-     * Add a provider to the service
-     */
+
     public function addProvider(CitationProviderInterface $provider): void
     {
         $this->providers[] = $provider;

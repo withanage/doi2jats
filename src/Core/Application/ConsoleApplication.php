@@ -15,7 +15,7 @@ final class ConsoleApplication
 {
     private CitationService $citationService;
     private bool $verbose = false;
-    private string $outputFormat = 'individual'; // individual, reflist, back
+    private string $outputFormat = 'individual';
 
     public function __construct()
     {
@@ -33,10 +33,7 @@ final class ConsoleApplication
         $this->citationService = new CitationService($providers, $xmlBuilder);
     }
 
-    /**
-     * @param string[] $args
-     * @return void
-     */
+
     public function run(array $args): void
     {
         if (count($args) < 2) {
@@ -44,7 +41,7 @@ final class ConsoleApplication
             exit(1);
         }
 
-        // Parse options and DOIs
+
         $options = $this->parseArguments($args);
         $dois = $options['dois'];
 
@@ -89,17 +86,9 @@ final class ConsoleApplication
     }
 
 
-    /**
-     * @param string $args
-     * @return array
-     */
 
-    /**
-     * Parse command line arguments into structured data
-     *
-     * @param array $args Command line arguments array
-     * @return array Parsed arguments with keys: dois, verbose, format
-     */
+
+
     private function parseArguments(array $args): array
     {
         $dois = [];
@@ -131,7 +120,7 @@ final class ConsoleApplication
                     $this->showUsage();
                     exit(0);
                 default:
-                    // Assume it's a DOI
+
                     $dois[] = $arg;
 
                     break;
@@ -178,10 +167,7 @@ final class ConsoleApplication
 
         $this->outputResults($citations, $errors);
     }
-    /**
-     * @param string[] $citations
-     * @param string[] $errors
-     */
+
     private function outputResults(array $citations, array $errors): void
     {
         switch ($this->outputFormat) {
@@ -199,7 +185,7 @@ final class ConsoleApplication
                 break;
         }
 
-        // Output summary if verbose or if there were errors
+
         if ($this->verbose || ! empty($errors)) {
             $this->outputSummary($citations, $errors);
         }
@@ -244,12 +230,7 @@ final class ConsoleApplication
     }
 
 
-    /**
-     * Output bibliography in XML format
-     *
-     * @param array $citations Array of citation arrays with 'doi' and 'citation' keys
-     * @param array $errors Array of error arrays with 'doi' and 'error' keys
-     */
+
     private function outputBibliography(array $citations, array $errors): void
     {
         echo "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n";
@@ -258,7 +239,7 @@ final class ConsoleApplication
         echo "    <title>References</title>\n";
 
         foreach ($citations as $index => $result) {
-            // Ensure $result is an array and has required keys
+
             if (! is_array($result) || ! isset($result['doi'], $result['citation'])) {
                 echo "    <!-- ERROR: Invalid citation data at index {$index} -->\n";
 
@@ -278,7 +259,7 @@ final class ConsoleApplication
         }
 
         foreach ($errors as $error) {
-            // Ensure $error is an array and has required keys
+
             if (! is_array($error) || ! isset($error['doi'], $error['error'])) {
                 echo "    <!-- ERROR: Invalid error data structure -->\n";
 
@@ -307,7 +288,7 @@ final class ConsoleApplication
         if (! empty($errors)) {
             fwrite(STDERR, "\nFailed DOIs:\n");
             foreach ($errors as $error) {
-                // Handle both array and string error formats
+
                 if (is_array($error) && isset($error['doi'], $error['error'])) {
                     fwrite(STDERR, "  - {$error['doi']}: {$error['error']}\n");
                 } elseif (is_string($error)) {

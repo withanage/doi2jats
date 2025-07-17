@@ -20,9 +20,7 @@ abstract class AbstractCitationProvider implements CitationProviderInterface
         ], $defaultHeaders);
     }
 
-    /**
-     * Make HTTP request to API
-     */
+
     protected function makeRequest(string $url, array $headers = []): ?array
     {
         $context = stream_context_create([
@@ -48,9 +46,7 @@ abstract class AbstractCitationProvider implements CitationProviderInterface
         return $data;
     }
 
-    /**
-     * Build HTTP headers array into header string
-     */
+
     private function buildHeaders(array $headers): string
     {
         $headerLines = [];
@@ -61,8 +57,6 @@ abstract class AbstractCitationProvider implements CitationProviderInterface
         return implode("\r\n", $headerLines);
     }
 
-    /**
-     * Transform raw API data into standardized citation data
-     */
+
     abstract protected function transformData(array $rawData): array;
 }
