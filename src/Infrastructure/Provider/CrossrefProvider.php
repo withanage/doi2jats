@@ -20,7 +20,7 @@ final class CrossrefProvider extends AbstractCitationProvider
             $response = $this->makeRequest($url);
 
             $message = $response['message'] ?? null;
-            if (!$message) {
+            if (! $message) {
                 return null;
             }
 
