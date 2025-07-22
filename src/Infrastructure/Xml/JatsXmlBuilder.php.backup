@@ -22,9 +22,6 @@ final class JatsXmlBuilder implements XmlBuilderInterface
 
     public function buildCitation(array $citationData): string
     {
-        // Clear the document to prevent accumulation
-        $this->document = new DOMDocument('1.0', 'UTF-8');
-        $this->document->formatOutput = true;
         $citation = CitationData::fromArray($citationData);
 
         $elementCitation = $this->document->createElement('element-citation');
