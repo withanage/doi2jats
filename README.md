@@ -193,6 +193,7 @@ composer test
 - ext-json
 - ext-simplexml (for XML manipulation in reflist formats)
 
-# Cintribution
+## Contribution
 
-- Lead  and concept : Dulip Withanage (TIB)
+- Lead  and concept : Dulip Withanage (TIB) https://www.tib.eu
+
