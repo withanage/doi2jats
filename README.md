@@ -172,7 +172,8 @@ Failed DOIs:
 
 
 ## Development
-- PHP Coding and code reading required. tool does not contain method documentation.
+- PKP advanced skills required. You'll be able to write and read PHP code. Please note that the tool doesn't include method documentation.
+- 
 
 ### Testing
 
