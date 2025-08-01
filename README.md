@@ -46,9 +46,15 @@ php doi2jats.php -v -f reflist 10.30430/gjae.2023.0350 10.52825/bis.v1i.42
 
 ## Installation
 
-
 ### Using Composer (Recommended)
+```bash
+composer require citation-generator/doi2jats
 
+php vendor/citation-generator/doi2jats/doi2jats.php -h
+
+```
+
+### Using  github
 ```bash
 git clone https://github.com/withanage/doi2jats/
 cd doi2jats
@@ -56,7 +62,7 @@ composer install
 
 ```
 
-### Without Composer
+### Using  github ithout Composer
 
 The application includes a fallback PSR-4 autoloader, so it works without Composer.
 
