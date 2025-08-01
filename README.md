@@ -96,7 +96,7 @@ Each citation as separate XML documents:
 </element-citation>
 ```
 
-####  REflist
+####  Reflist
 All citations wrapped in a reference list:
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
