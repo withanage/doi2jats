@@ -62,9 +62,11 @@ composer install
 
 ```
 
-### Using  github ithout Composer
+### Using  github without Composer
 
+```
 The application includes a fallback PSR-4 autoloader, so it works without Composer.
+```
 
 ## Usage
 
