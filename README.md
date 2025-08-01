@@ -198,7 +198,7 @@ composer test
 
 ## Requirements
 
-- PHP 8.0 or higher
+- PHP 8.1 or higher
 - ext-dom
 - ext-json
 - ext-simplexml (for XML manipulation in reflist formats)
